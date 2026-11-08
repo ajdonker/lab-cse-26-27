@@ -280,3 +280,9 @@ gradle-app.setting
 .metals
 .vscode
 **/.ipynb_checkpoints/*
+
+.datasets
+datasets/
+
+.devcontainer
+
