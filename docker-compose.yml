@@ -7,14 +7,14 @@ x-spark: &spark
   image: bigunibo/spark-local-template:4.2.0
   pull_policy: missing
   volumes:
-    - .:/workspace
+    - .:/workspace:Z
     # Shared by driver and executors: write job outputs here, not in /tmp
     - spark-data:/data
     # Event logs written by the drivers and read by the history server
     - spark-events:/tmp/spark-events
   environment:
     # Links shown in the web UIs point to localhost, where their ports are reachable
-    SPARK_PUBLIC_DNS: localhost
+    SPARK_PUBLIC_DNS: localhost 
 
 services:
   spark-master:
