@@ -266,11 +266,11 @@ Create a cluster with the following command.
 ```
 aws emr create-cluster \
     --name "Big Data Cluster" \
-    --log-uri "s3://<your_s3_log_directory>" \
+    --log-uri "s3://lab104blagoja/log/" \
     --release-label "emr-spark-8.1.0" \
     --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m4.large InstanceGroupType=CORE,InstanceCount=2,InstanceType=m4.large \
     --service-role EMR_DefaultRole \
-    --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole,KeyName=<your_key_pair_name> \
+    --ec2-attributes InstanceProfile=EMR_EC2_DefaultRole,KeyName=blagoja_key \
     --region "us-east-1"
 ```
 
@@ -305,11 +305,11 @@ aws emr terminate-clusters --cluster-ids <cluster_id>
   - You should see it in the "build/libs" folder; if the process fails, delete the folder and try again.
 - Upload the jar to S3 with:
     ```bash
-    aws s3api put-object --bucket <your_bucket> --key BigDataLab.jar --body build/libs/BigDataLab.jar
+    aws s3api put-object --bucket lab104blagoja --key BigDataLab.jar --body build/libs/BigDataLab.jar
     ```
 - Run the jar with:
     ```bash
-    aws emr add-steps --cluster-id <your_cluster_id> --steps '[{"Args": ["spark-submit", "--deploy-mode","cluster", "--class","lab104.WordCount", "s3://<your_bucket>/BigDataLab.jar", "sharedRemote"], "Type":"CUSTOM_JAR", "ActionOnFailure":"CONTINUE", "Jar":"command-runner.jar", "Properties":"", "Name":"My Spark app"}]'
+    aws emr add-steps --cluster-id j-07496883950XH4RN7PW9 --steps '[{"Args": ["spark-submit", "--deploy-mode","cluster", "--class","lab104.WordCount", "s3://lab104blagoja/BigDataLab.jar", "sharedRemote"], "Type":"CUSTOM_JAR", "ActionOnFailure":"CONTINUE", "Jar":"command-runner.jar", "Properties":"", "Name":"My Spark app"}]'
     ```
     - If you want to request specific resources, you can add (after the `--class` option and *before* the jar) the following options (adjust the values according to your needs and the resources available in the cluster):
         - `"--executor-memory", "4g",`
@@ -319,8 +319,8 @@ aws emr terminate-clusters --cluster-ids <cluster_id>
         - `"--driver-cores", "2"`
 - Wait for the application to finish (you should see "final status: SUCCEEDED" in the last Application report); check it in the UI or via this command:
     ```bash
-    aws emr describe-step --cluster-id <your_cluster_id> \
-        --step-id <your_step_id> \
+    aws emr describe-step --cluster-id j-07496883950XH4RN7PW9 \
+        --step-id s-10019333G6284CB4ZQQD \
         --query 'Step.Status'
     ```
 - Check out the results in the "output" folder in your S3 bucket (via CLI or GUI).
